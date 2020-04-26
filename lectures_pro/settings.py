@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import datetime
 import os
 
 # virtual env
@@ -24,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'py2se)bqaeywcb=x1$poet2&f8ad5!pn$nx=&)61-j15b*pim#'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -51,6 +52,14 @@ INSTALLED_APPS = [
     # third-party
     # ###########
     "rest_framework",
+    "rest_framework.authtoken",
+    "rest_auth",
+    "django.contrib.sites",
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
+    'allauth.socialaccount',
+
 
 ]
 
@@ -126,6 +135,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
+# STATIC AND MEDIA
+# ################
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
@@ -133,15 +144,38 @@ MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = "users.User"
 
-# format the date time project
-# DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+# ALL-AUTH AND REST-AUTH
+# ######################
+SITE_ID = 1
+REST_USE_JWT = True
 
-# REST_FRAMEWORK = {
-#     'DATE_INPUT_FORMATS': ["%d-%m-%Y", ],
-#     ...}
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
-# REST_FRAMEWORK = {
-#     'DATETIME_INPUT_FORMATS': ['%Y-%m-%d %H:%M:%S'],
-# }
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'users.serializers.SerializerUser'
+}
 
-print(os.getenv("USER_NUM"))
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+    'DATETIME_FORMAT': "%m/%d/%Y %H:%M:%S",
+
+}
+
+
+# EMAIL BACKEND
+#################
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# JWT
+JWT_AUTH = {
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=1),
+}

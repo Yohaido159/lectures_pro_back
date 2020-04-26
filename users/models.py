@@ -29,7 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=255, null=True, blank=True)
-    phone = models.CharField(max_length=50, blank=True, null=True, unique=True, default="")
+    phone = models.CharField(max_length=50, blank=True, null=True, default="")
 
     objects = UserManager()
 

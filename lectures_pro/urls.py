@@ -20,13 +20,29 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
+# FOR JWT
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # USERES, SUB_PERSONES, CLASSES
     path("api/", include("users.urls")),
     path("api/", include("sub_persones.urls")),
     path("api/", include("classes.urls")),
 
+    # REST
     path("rest/", include("rest_framework.urls")),
+    path("rest-auth/", include('rest_auth.urls')),
+    path("rest-auth/registration/", include('rest_auth.registration.urls')),
+
+    # JWT
+    path('token-auth/', obtain_jwt_token),
+    path('token-refresh/', refresh_jwt_token),
+    path('token-verify/', verify_jwt_token),
+
+
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
