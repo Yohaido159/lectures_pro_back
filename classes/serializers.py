@@ -5,14 +5,18 @@ from .models import TheClass, Membership, Image, Video, Opinion
 # from users.serializers import SerializerUser
 from users.models import User
 from sub_persones.serializers import SerializerSubPerson
+from sub_persones.models import SubPerson
 
 
 # BASE
-
 class SerializerMembership(serializers.ModelSerializer):
+    # the_sub_person = serializers.CharField(source="the_sub_person.name")
+    the_sub_person = SerializerSubPerson()
+
     class Meta:
         model = Membership
-        fields = "__all__"
+        # fields = "__all__"
+        exclude = ["id"]
 
 
 class SerializerImage(serializers.ModelSerializer):
@@ -40,10 +44,12 @@ class SerializerOpinion(serializers.ModelSerializer):
 
 
 class SerializerClass(serializers.ModelSerializer):
-    sub_persones = SerializerSubPerson(many=True, read_only=True)
+
+    # sub_persones = SerializerSubPerson(many=True, read_only=True)
     images = SerializerImage(many=True, read_only=True)
     videos = SerializerVideo(many=True, read_only=True)
     opinions = SerializerOpinion(many=True, read_only=True)
+    members = SerializerMembership(many=True, read_only=True)
 
     class Meta:
         model = TheClass

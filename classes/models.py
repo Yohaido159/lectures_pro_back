@@ -19,7 +19,7 @@ def get_video_fk(instance, filename):
 class TheClass(models.Model):
     class_name = models.CharField(max_length=120, blank=True, null=True)
     main_person = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="the_classes")
-    sub_persones = models.ManyToManyField(SubPerson)
+    sub_persones = models.ManyToManyField(SubPerson, through="Membership", through_fields=("the_class", "the_sub_person"),  related_name="A", blank=True)
     start_at = models.DateTimeField(blank=True, null=True)
     available = models.CharField(max_length=50, blank=True, null=True)
     is_done = models.BooleanField(default=False, blank=True, null=True)
@@ -34,10 +34,12 @@ class TheClass(models.Model):
 
 
 class Membership(models.Model):
-    the_class = models.ForeignKey(TheClass, on_delete=models.CASCADE)
-    the_sub_person = models.ForeignKey(SubPerson, on_delete=models.CASCADE)
-    the_main_person = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        db_table = "classes_A_the_sub_person"
+
+    the_class = models.ForeignKey(TheClass, on_delete=models.CASCADE, blank=True, null=True, related_name="members")
+    the_sub_person = models.ForeignKey(SubPerson, on_delete=models.CASCADE, blank=True, null=True, related_name="member")
+    join_at = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     def __str__(self):
         return self.the_class.class_name
