@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+# virtual env
+from dotenv import load_dotenv
+load_dotenv()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -37,9 +41,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # my
+    # ###########
     "users",
     "sub_persones",
-    "classes"
+    "classes",
+
+    # third-party
+    # ###########
+    "rest_framework",
+
 ]
 
 MIDDLEWARE = [
@@ -116,4 +128,20 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media').replace('\\', '/')
+MEDIA_URL = '/media/'
+
 AUTH_USER_MODEL = "users.User"
+
+# format the date time project
+# DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+# REST_FRAMEWORK = {
+#     'DATE_INPUT_FORMATS': ["%d-%m-%Y", ],
+#     ...}
+
+# REST_FRAMEWORK = {
+#     'DATETIME_INPUT_FORMATS': ['%Y-%m-%d %H:%M:%S'],
+# }
+
+print(os.getenv("USER_NUM"))

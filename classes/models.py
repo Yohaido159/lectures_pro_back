@@ -7,19 +7,19 @@ from sub_persones.models import SubPerson
 def get_image_fk(instance, filename):
     main_person = instance.belongs_to.main_person.name
     the_class = instance.belongs_to.class_name
-    return f"media/{main_person}/{the_class}/images/{filename}"
+    return f"{main_person}/{the_class}/images/{filename}"
 
 
 def get_video_fk(instance, filename):
     main_person = instance.belongs_to.main_person.name
     the_class = instance.belongs_to.class_name
-    return f"media/{main_person}/{the_class}/video/{filename}"
+    return f"{main_person}/{the_class}/video/{filename}"
 
 
 class TheClass(models.Model):
     class_name = models.CharField(max_length=120, blank=True, null=True)
-    main_person = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    sub_persones = models.ManyToManyField(SubPerson, through="Membership")
+    main_person = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="the_classes")
+    sub_persones = models.ManyToManyField(SubPerson)
     start_at = models.DateTimeField(blank=True, null=True)
     available = models.CharField(max_length=50, blank=True, null=True)
     is_done = models.BooleanField(default=False, blank=True, null=True)
@@ -45,7 +45,7 @@ class Membership(models.Model):
 
 class Image(models.Model):
     image_file = models.ImageField(upload_to=get_image_fk, blank=True, null=True)
-    belongs_to = models.ForeignKey(TheClass, on_delete=models.CASCADE)
+    belongs_to = models.ForeignKey(TheClass, on_delete=models.CASCADE, related_name="images")
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
@@ -54,16 +54,16 @@ class Image(models.Model):
 
 class Video(models.Model):
     video_file = models.FileField(upload_to=get_video_fk, blank=True, null=True)
-    belongs_to = models.ForeignKey(TheClass, on_delete=models.CASCADE)
+    belongs_to = models.ForeignKey(TheClass, on_delete=models.CASCADE, related_name="videos")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.video_file.name
 
 
-class Opinions(models.Model):
+class Opinion(models.Model):
     sub_person = models.ForeignKey(SubPerson, on_delete=models.CASCADE)
-    the_class = models.ForeignKey(TheClass, on_delete=models.CASCADE)
+    the_class = models.ForeignKey(TheClass, on_delete=models.CASCADE, related_name="opinions")
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
